@@ -1,9 +1,10 @@
 import logging
 
-from sqlalchemy.orm import Session
+from requests import Session
+
+from src.database.models.stock_models import StockPricing
 from .base_service import BaseService
 from ..database.repositories.stock_pricing_repository import StockPricingRepository
-from src.database.models.stock_models import StockPricing
 
 logger = logging.getLogger(__name__)
 

@@ -12,10 +12,7 @@ def main():
     try:
         db_engine = create_db_engine()
         data_fetcher = DataFetcher(db_engine)
-        tickers = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"]
-        for ticker in tickers:
-            pricing_data, balance_sheet_data = data_fetcher.get_data(ticker, "2Y")
-
+        stock_list_data_df = data_fetcher.get_stock_list()
     except Exception as e:
         logger.error(f"An error occurred: {e}", exc_info=True)
 

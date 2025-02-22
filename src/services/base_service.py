@@ -53,9 +53,7 @@ class BaseService(ABC):
                 downloaded_data = self.download_data(ticker, period)
                 transformed_data = self.transform_data(ticker, downloaded_data)
 
-                # Save to SQLite
-                for item in transformed_data:
-                    repository.add(**item)  # Pass item as kwargs to the add method
+                self.save_to_db(repository, transformed_data)
 
                 # Save to Redis (serialize to JSON)
                 self.cache.set(cache_key, transformed_data)
@@ -63,6 +61,11 @@ class BaseService(ABC):
                 return transformed_data
         finally:
             db.close()
+
+    def save_to_db(self, repository, transformed_data):
+        # Save to SQLite
+        for item in transformed_data:
+            repository.add(**item)  # Pass item as kwargs to the add method
 
     def _model_to_dict(self, model_instance):
         """
