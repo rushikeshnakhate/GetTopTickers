@@ -1,22 +1,33 @@
 import redis
 import json
+import threading
 from datetime import timedelta
 from .base_cache import BaseCache
 
 
 class RedisCache(BaseCache):
-    def __init__(self, host: str = "localhost", port: int = 6379, db: int = 0):
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, host="localhost", port=6379, db=0):
+        with cls._lock:
+            if cls._instance is None:
+                cls._instance = super(RedisCache, cls).__new__(cls)
+                cls._instance._initialized = False
+        return cls._instance
+
+    def __init__(self, host="localhost", port=6379, db=0):
+        if self._initialized:
+            return
         self.cache = redis.Redis(host=host, port=port, db=db)
+        self._initialized = True
 
     def get(self, key: str):
-        """Get data from Redis cache."""
         cached_data = self.cache.get(key)
         return json.loads(cached_data) if cached_data else None
 
     def set(self, key: str, value, ttl: int = 3600):
-        """Set data in Redis cache with a TTL (time-to-live)."""
         self.cache.setex(key, timedelta(seconds=ttl), json.dumps(value))
 
     def exists(self, key: str) -> bool:
-        """Check if a key exists in Redis cache."""
         return self.cache.exists(key) == 1

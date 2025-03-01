@@ -1,10 +1,9 @@
-from sqlalchemy import inspect  # Add this import
-from src.database.sqlite_db_engine import SQLiteDbEngine
-from src.providers.yahoo_finance_provider import YahooFinanceProvider
-from src.cache.sqlite_cache import SQLiteCache
-from src.services.stock_pricing_service import StockPricingService
-from src.services.balance_sheet_service import BalanceSheetService
 import logging
+
+from sqlalchemy import inspect  # Add this import
+
+from src.cache.sqlite_cache import SQLiteCache
+from src.database.sqlite_db_engine import SQLiteDbEngine
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,4 +24,4 @@ def create_db_engine():
     inspector = inspect(db_engine.engine)  # Use the engine from db_engine
     tables = inspector.get_table_names()
     logger.info(f"Tables in the database: {tables}")
-    return db_engine
+    return db_engine, cache

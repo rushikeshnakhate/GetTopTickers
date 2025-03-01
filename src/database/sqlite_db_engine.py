@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-
 from .database_engine import DatabaseEngine
+from .models.cache_models import Cache  # Import the Cache model
 
 Base = declarative_base()
 
@@ -18,4 +18,5 @@ class SQLiteDbEngine(DatabaseEngine):
         return self.SessionLocal()
 
     def create_tables(self):
+        # Ensure all models are registered with Base.metadata
         Base.metadata.create_all(bind=self.engine)
