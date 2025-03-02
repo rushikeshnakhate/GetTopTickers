@@ -14,32 +14,37 @@ class MovingAverageConvergenceDivergence(BaseIndicator):
         self.signal_period = signal_period
 
     def calculate(self, data: pd.Series):
-        if data is None or data.empty:
-            logging.warn("MovingAverageConvergenceDivergence no data for stock.")
-            return None
+        try:
+            if data is None or data.empty:
+                logging.warn("MovingAverageConvergenceDivergence no data for stock.")
+                return None
 
-        # Calculate the fast and slow EMAs
-        fast_ema = data.ewm(span=self.period, adjust=False).mean()
-        slow_ema = data.ewm(span=self.slow_period, adjust=False).mean()
+            # Calculate the fast and slow EMAs
+            fast_ema = data.ewm(span=self.period, adjust=False).mean()
+            slow_ema = data.ewm(span=self.slow_period, adjust=False).mean()
 
-        # Calculate the MACD and Signal Line
-        macd = fast_ema - slow_ema
-        signal_line = macd.ewm(span=self.signal_period, adjust=False).mean()
+            # Calculate the MACD and Signal Line
+            macd = fast_ema - slow_ema
+            signal_line = macd.ewm(span=self.signal_period, adjust=False).mean()
 
-        # Check if we have more than one value
-        macd_value = macd.iloc[-1]
-        signal_line_value = signal_line.iloc[-1]
+            # Check if we have more than one value
+            macd_value = macd.iloc[-1]
+            signal_line_value = signal_line.iloc[-1]
 
-        # Ensure we only get scalar values (if the result is a Series)
-        if isinstance(macd_value, pd.Series):
-            macd_value = macd_value.values[-1]  # Get the last value as scalar
-        if isinstance(signal_line_value, pd.Series):
-            signal_line_value = signal_line_value.values[-1]  # Get the last value as scalar
+            # Ensure we only get scalar values (if the result is a Series)
+            if isinstance(macd_value, pd.Series):
+                macd_value = macd_value.values[-1]  # Get the last value as scalar
+            if isinstance(signal_line_value, pd.Series):
+                signal_line_value = signal_line_value.values[-1]  # Get the last value as scalar
 
-        # Return as a dictionary with the latest values
-        result = {
-            'MACD': macd_value.item() if isinstance(macd_value, np.ndarray) else macd_value,
-            'Signal Line': signal_line_value.item() if isinstance(signal_line_value, np.ndarray) else signal_line_value
-        }
+            # Return as a dictionary with the latest values
+            result = {
+                'MACD': macd_value.item() if isinstance(macd_value, np.ndarray) else macd_value,
+                'Signal Line': signal_line_value.item() if isinstance(signal_line_value,
+                                                                      np.ndarray) else signal_line_value
+            }
 
-        return result
+            return result
+        except Exception as ex:
+            logging.error("error Calculates the Moving Average Convergence Divergence error={}".format(ex))
+            return str(ex)

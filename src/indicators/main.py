@@ -1,8 +1,7 @@
 import logging
-from typing import Optional, List
+from typing import List, Optional
 
 import pandas as pd
-from tabulate import tabulate
 
 from src.cache.cache_factory import CacheFactory
 from src.indicators.close_price_indicators.bollinger_bands import BollingerBands
@@ -24,13 +23,17 @@ from src.indicators.historical_price_indicators.keltner_channel import KeltnerCh
 from src.indicators.historical_price_indicators.moving_average_convergence_divergence import \
     MovingAverageConvergenceDivergence
 from src.indicators.historical_price_indicators.on_balance_volume import OnBalanceVolume
-from src.service.main import dataFetcher
 from src.utils.constants import CacheType, GLobalColumnName
 from src.utils.utils import to_dataframe
 
 
 class IndicatorFactory:
     """Factory class to calculate multiple indicators."""
+
+    def __init__(self, period: int = 14):
+        """Initialize with period and stock data."""
+        self.period = period
+        self.cache = CacheFactory.get_cache(CacheType.PANDAS)
 
     # Group indicators based on close price or historical prices (Open, High, Low, Volume)
     CLOSE_PRICE_INDICATORS = {
@@ -57,13 +60,10 @@ class IndicatorFactory:
         'WilliamsR': WilliamsR
     }
 
-    def __init__(self, stock_data: pd.DataFrame, period: int = 14):
-        """Initialize with period and stock data."""
-        self.period = period
-        self.stock_data = stock_data
-        self.cache = CacheFactory.get_cache(CacheType.PANDAS)
-
-    def calculate_close_price_indicators(self, ticker: str, selected_indicators: Optional[List[str]] = None) -> dict:
+    def _calculate_close_price_indicators(self,
+                                          ticker_data_df: pd.DataFrame,
+                                          ticker: str,
+                                          selected_indicators: Optional[List[str]] = None) -> dict:
         """
         Calculate indicators that use only the close price.
         """
@@ -75,13 +75,15 @@ class IndicatorFactory:
                 indicator_class = close_price_indicators_group[indicator_name]
                 indicator = indicator_class(self.period)
                 logging.info("calculating close price indicator={} for ticker={}".format(indicator_name, ticker))
-                result = indicator.calculate(self.stock_data['Close'])
+                result = indicator.calculate(ticker_data_df['Close'])
                 close_price_results[indicator_name] = result
 
         return close_price_results
 
-    def calculate_historical_price_indicators(self, ticker: str,
-                                              selected_indicators: Optional[List[str]] = None) -> dict:
+    def _calculate_historical_price_indicators(self,
+                                               ticker_data_df: pd.DataFrame,
+                                               ticker: str,
+                                               selected_indicators: Optional[List[str]] = None) -> dict:
         """
         Calculate indicators that use historical price data (Open, High, Low, Volume).
         """
@@ -93,34 +95,93 @@ class IndicatorFactory:
                 indicator_class = historical_price_indicators_group[indicator_name]
                 indicator = indicator_class(self.period)
                 logging.info("calculating historic indicator={} for ticker={}".format(indicator_name, ticker))
-                result = indicator.calculate(self.stock_data)
+                result = indicator.calculate(ticker_data_df)
                 historical_price_results[indicator_name] = result
 
         return historical_price_results
 
-    def calculate_all_indicators(self, ticker: str, start_date: str, end_date: str,
-                                 selected_indicators: Optional[List[str]] = None) -> pd.DataFrame:
+    def _calculate_all_indicators(self,
+                                  ticker_data_df: pd.DataFrame,
+                                  ticker: str,
+                                  start_date: str,
+                                  end_date: str,
+                                  selected_indicators: Optional[List[str]] = None) -> pd.DataFrame:
         """
         Calculate all indicators for both close price and historical price data and combine them with caching.
         """
         cache_key = f"indicator_{ticker}_{start_date}_{end_date}"
         cached_data = self.cache.get(cache_key)
-
         if cached_data is not None:
             logging.info(f"Returning cached indicators data for {ticker} ({start_date} to {end_date})")
             return cached_data
 
+        logging.info(f" calculating indicators data for {ticker} ({start_date} to {end_date})")
         # Calculate indicators
-        close_price_results = self.calculate_close_price_indicators(ticker, selected_indicators)
-        historical_price_results = self.calculate_historical_price_indicators(ticker, selected_indicators)
+        close_price_results = self._calculate_close_price_indicators(ticker_data_df, ticker, selected_indicators)
+        historical_price_results = self._calculate_historical_price_indicators(ticker_data_df, ticker,
+                                                                               selected_indicators)
 
         all_results = {**close_price_results, **historical_price_results}
-        return to_dataframe(column_name=GLobalColumnName.Ticker, column_value=ticker, results=all_results)
+        return to_dataframe(column_name=GLobalColumnName.TICKER, column_value=ticker, results=all_results)
 
+    def _get_indicator(self,
+                       ticker_data_df: pd.DataFrame,
+                       ticker: str,
+                       start_date: str,
+                       end_date: str,
+                       selected_indicators: Optional[List[str]] = None):
+        all_indicators_df = self._calculate_all_indicators(ticker_data_df=ticker_data_df,
+                                                           ticker=ticker,
+                                                           start_date=start_date,
+                                                           end_date=end_date)
+        return all_indicators_df
 
-def get_indicator(ticker: str, start_date: str, end_date: str):
-    data = dataFetcher.get_close_price_service(ticker=ticker, start_date=start_date, end_date=end_date)
-    factory = IndicatorFactory(data)
-    # Calculate all indicators for the current symbol
-    all_indicators_df = factory.calculate_all_indicators(ticker=ticker, start_date=start_date, end_date=end_date)
-    return all_indicators_df
+    def get_indicator_bulk(self,
+                           ticker_data_df: pd.DataFrame,
+                           ticker_list: Optional[List[str]],
+                           start_date=None,
+                           end_date=None,
+                           selected_indicators: Optional[List[str]] = None) -> pd.DataFrame:
+        """
+        Calculate indicators for multiple tickers using pre-fetched close price data.
+
+        :param selected_indicators:
+        :param ticker_data_df:
+        :param ticker_list: Optional list of stock ticker symbols. If None, fetch all available stocks.
+        :param start_date: Start date of the data.
+        :param end_date: End date of the data.
+        :return: DataFrame containing indicators for the provided tickers.
+        """
+        ticker_len = len(ticker_list)
+
+        cache_key = "all_indicator_{ticker_len}_{start_date}_{end_date}".format(ticker_len=ticker_len,
+                                                                                start_date=start_date,
+                                                                                end_date=end_date)
+        cached_results = self.cache.get(cache_key)
+        if cached_results is not None:
+            logging.info("Returning cached data to indicator for all stocks key={}".format(cache_key))
+            return cached_results
+
+        # Initialize the indicator factory and compute indicators for each ticker
+        indicators_list = []
+        for ticker in ticker_list:
+            ticker_data = ticker_data_df[ticker_data_df[GLobalColumnName.TICKER] == ticker]
+            if ticker_data.empty:
+                logging.warning(f"get_indicator_bulk No data found for ticker={ticker}. Skipping.")
+                continue
+
+            indicators_df = self._get_indicator(ticker_data_df=ticker_data,
+                                                ticker=ticker,
+                                                start_date=start_date,
+                                                end_date=end_date,
+                                                selected_indicators=selected_indicators)
+            indicators_list.append(indicators_df)
+
+        # Concatenate results if available
+        if indicators_list:
+            df = pd.concat(indicators_list, ignore_index=True)
+        else:
+            logging.warning("No indicators were computed for the provided tickers.")
+            df = pd.DataFrame()
+        self.cache.set(cache_key, df)
+        return df

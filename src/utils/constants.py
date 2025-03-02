@@ -3,8 +3,19 @@ from enum import Enum
 
 
 @dataclasses.dataclass
+class GlobalStockData:
+    START_DATE: str = "Start Date"
+    END_DATE: str = "End Date"
+    LOW: str = "Low"
+    CLOSE: str = "Close"
+    VOLUME: str = "Volume"
+    STOCK_SPLIT: str = "Stock Splits"
+    DIVIDENDS: str = "Dividends"
+
+
+@dataclasses.dataclass
 class GLobalColumnName:
-    Ticker: str = "Ticker"
+    TICKER: str = "Ticker"
     ticker_nifty50 = "^NSEI"  # Nifty 50 Index
     ticker_nifty100 = "^NSE100"  # Nifty 100 Index
 

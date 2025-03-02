@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
@@ -10,8 +12,12 @@ class UpsideCaptureRatio(BasePerformanceMatrix):
         self.market_data = market_data
 
     def calculate(self):
-        stock_returns = PercentageChange(self.stock_data).calculate()
-        market_returns = PercentageChange(self.market_data).calculate()
-        positive_market_returns = market_returns[market_returns > 0]
-        stock_positive_returns = stock_returns[market_returns > 0]
-        return (stock_positive_returns.mean() / positive_market_returns.mean()) * 100
+        try:
+            stock_returns = PercentageChange(self.stock_data).calculate()
+            market_returns = PercentageChange(self.market_data).calculate()
+            positive_market_returns = market_returns[market_returns > 0]
+            stock_positive_returns = stock_returns[market_returns > 0]
+            return (stock_positive_returns.mean() / positive_market_returns.mean()) * 100
+        except Exception as e:
+            logging.error("UpsideCaptureRatio Exception: " + str(e))
+            return str(e)
