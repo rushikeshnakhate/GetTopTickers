@@ -12,14 +12,14 @@ from src.performance_matrix.return_matrix.return_metrics_group import ReturnMetr
 from src.performance_matrix.risk_adjusted_return_metrics.risk_adjusted_metrics_group import RiskAdjustedMetricsGroup
 from src.performance_matrix.risk_metrics.return_metrics_group import RiskMetricsGroup
 from src.performance_matrix.trade_metrics.trade_metrics_group import TradeMetricsGroup
-from src.utils.constants import GLobalColumnName, CacheType
+from src.utils.constants import GLobalColumnName, CacheType, GlobalStockData
 from src.utils.utils import to_dataframe
 
 
 class PerformanceMatrixFactory:
     """Factory class to calculate multiple performance metrics."""
 
-    def __init__(self, ticker_data: pd.Series, market_data: pd.Series = None, risk_free_rate: float = 0.0):
+    def __init__(self, ticker_data: pd.DataFrame, market_data: pd.DataFrame = None, risk_free_rate: float = 0.0):
         """Initialize with stock data, market data, and risk-free rate."""
         self.ticker_data = ticker_data
         self.market_data = market_data
@@ -29,7 +29,7 @@ class PerformanceMatrixFactory:
         # Store metric groups in a dictionary
         self.metric_groups = {
             "benchmark_relative": BenchmarkRelativeMetricsGroup(ticker_data, market_data),
-            "distribution": DistributionMetricsGroup(ticker_data),
+            "distribution": DistributionMetricsGroup(ticker_data, market_data),
             "return": ReturnMetricsGroup(ticker_data),
             "risk": RiskMetricsGroup(ticker_data),
             "risk_adjusted": RiskAdjustedMetricsGroup(ticker_data, market_data),
@@ -58,7 +58,8 @@ class PerformanceMatrixFactory:
 
         results = {}
         for name, group in groups_to_calculate.items():
-            group_results = group.calculate(cache_key=key, selected_metrics=selected_metrics)
+            group_results = group.calculate(cache_key=key,
+                                            selected_metrics=selected_metrics)
             results.update(group_results)
         return results
 
@@ -91,7 +92,10 @@ def get_performance_metrics(
             "market_data={},ticker_data={} is None".format(cache_key, market_data.shape, ticker_data.shape))
         # Calculate performance metrics
         return pd.DataFrame
-    factory = PerformanceMatrixFactory(ticker_data=ticker_data, market_data=market_data, risk_free_rate=0.02)
+
+    factory = PerformanceMatrixFactory(ticker_data=ticker_data,
+                                       market_data=market_data,
+                                       risk_free_rate=0.02)
     results = factory.calculate(cache_key, group_name, selected_metrics)
     return to_dataframe(column_name=GLobalColumnName.TICKER, column_value=ticker, results=results)
 

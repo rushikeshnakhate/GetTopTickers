@@ -5,7 +5,7 @@ from src.performance_matrix.return_matrix.percentage_change import PercentageCha
 
 
 class RiskOfRuin(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, ruin_level: float = 0.2):
+    def __init__(self, stock_data: pd.DataFrame, ruin_level: float = 0.2):
         super().__init__(stock_data)
         self.ruin_level = ruin_level
 

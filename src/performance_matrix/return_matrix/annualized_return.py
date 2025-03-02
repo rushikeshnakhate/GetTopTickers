@@ -6,7 +6,7 @@ from src.performance_matrix.return_matrix.percentage_change import PercentageCha
 
 
 class AnnualizedReturn(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, periods_per_year: int = 252):
+    def __init__(self, stock_data: pd.DataFrame, periods_per_year: int = 252):
         super().__init__(stock_data)
         self.periods_per_year = periods_per_year
 

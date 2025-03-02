@@ -12,7 +12,7 @@ from src.performance_matrix.return_matrix.percentage_change_by_method import Per
 class ReturnMetricsGroup(BaseMetricsGroup):
     """Class to handle return-related performance metrics."""
 
-    def __init__(self, stock_data: pd.Series, market_data: pd.Series = None, risk_free_rate: float = 0.0):
+    def __init__(self, stock_data: pd.DataFrame, market_data: pd.DataFrame = None, risk_free_rate: float = 0.0):
         self.stock_data = stock_data
         metrics = {
             'PercentageChange': PercentageChangeByMethod,

@@ -8,7 +8,7 @@ from src.performance_matrix.risk_metrics.volatility import Volatility
 
 
 class SharpeRatio(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, market_data: pd.Series = None, risk_free_rate: float = 0.0):
+    def __init__(self, stock_data: pd.DataFrame, market_data: pd.DataFrame = None, risk_free_rate: float = 0.0):
         super().__init__(stock_data)
         self.market_data = market_data
         self.risk_free_rate = risk_free_rate

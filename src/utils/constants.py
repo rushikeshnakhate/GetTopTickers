@@ -8,6 +8,7 @@ class GlobalStockData:
     END_DATE: str = "End Date"
     LOW: str = "Low"
     CLOSE: str = "Close"
+    DATE: str = "Date"
     VOLUME: str = "Volume"
     STOCK_SPLIT: str = "Stock Splits"
     DIVIDENDS: str = "Dividends"

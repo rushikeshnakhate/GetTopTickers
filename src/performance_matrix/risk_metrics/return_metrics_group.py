@@ -11,7 +11,7 @@ from src.performance_matrix.risk_metrics.volatility import Volatility
 class RiskMetricsGroup(BaseMetricsGroup):
     """Handles return-related performance metrics."""
 
-    def __init__(self, stock_data: pd.Series, market_data: pd.Series = None, risk_free_rate: float = 0.0):
+    def __init__(self, stock_data: pd.DataFrame, market_data: pd.DataFrame = None, risk_free_rate: float = 0.0):
         metrics = {
             'Volatility': Volatility,
             'MaximumDrawdown': MaximumDrawdown,

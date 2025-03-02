@@ -8,7 +8,7 @@ from src.performance_matrix.risk_metrics.maximum_drawdown import MaximumDrawdown
 
 
 class CalmarRatio(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, market_data: pd.Series = None, risk_free_rate: float = 0.0,
+    def __init__(self, stock_data: pd.DataFrame, market_data: pd.DataFrame = None, risk_free_rate: float = 0.0,
                  periods_per_year: int = 252):
         super().__init__(stock_data)
         self.risk_free_rate = risk_free_rate

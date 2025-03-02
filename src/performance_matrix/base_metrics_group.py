@@ -10,7 +10,7 @@ from src.utils.constants import CacheType
 class BaseMetricsGroup:
     """Base class for handling different groups of performance metrics."""
 
-    def __init__(self, stock_data: pd.Series, market_data: Optional[pd.Series] = None,
+    def __init__(self, stock_data: pd.DataFrame, market_data: Optional[pd.DataFrame] = None,
                  risk_free_rate: float = 0.0, metrics: Dict[str, Type] = None):
         self.stock_data = stock_data
         self.market_data = market_data

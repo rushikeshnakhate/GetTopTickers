@@ -3,6 +3,7 @@ import os
 from typing import List
 
 import pandas as pd
+from pandas import DataFrame
 
 from src.cache.cache_factory import CacheFactory
 from src.service.balance_sheet_service import BalanceSheetService
@@ -30,7 +31,7 @@ class DataFetcherService:
         logger.info("get_balance_sheet_service price for ticker={}".format(ticker))
         return self.balance_sheet_service.get_data(ticker)
 
-    def get_close_price_service(self, ticker: str, start_date=None, end_date=None) -> pd.DataFrame:
+    def get_close_price_service(self, ticker: str, start_date=None, end_date=None) -> DataFrame | None:
         try:
             df = self.close_price_service.get_data(ticker=ticker, start_date=start_date, end_date=end_date)
             logger.info("closing price for ticker={},start_date={}, end_date={}".format(ticker, start_date, end_date))
@@ -67,6 +68,9 @@ class DataFetcherService:
 
             # Check if data is valid
             if df is not None and not df.empty:
+                # Reset the index to ensure the 'Date' column is preserved
+                df = df.reset_index()
+
                 # Add ticker, start date, and end date as columns
                 df[GLobalColumnName.TICKER] = ticker
                 df[GlobalStockData.START_DATE] = start_date
@@ -75,8 +79,12 @@ class DataFetcherService:
 
         # Combine all DataFrames into one
         if all_data:
-            df = pd.concat(all_data, ignore_index=True)
+            df = pd.concat(all_data, ignore_index=False)  # Set ignore_index=False to keep the index
         else:
-            df = pd.DataFrame()  # Return an empty Data
+            df = pd.DataFrame()  # Return an empty DataFrame
+
+        # Ensure the 'Date' column is preserved
+        if not df.empty and 'Date' in df.columns:
+            df.set_index('Date', inplace=True)  # Optionally set 'Date' as the index again
         self.cache.set(cache_key, df)
         return df

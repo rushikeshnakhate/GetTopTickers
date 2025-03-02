@@ -2,7 +2,7 @@ import pandas as pd
 
 
 class BasePerformanceMatrix:
-    def __init__(self, stock_data: pd.Series):
+    def __init__(self, stock_data: pd.DataFrame):
         """
         :param stock_data: Pandas Series containing stock prices or returns.
         """

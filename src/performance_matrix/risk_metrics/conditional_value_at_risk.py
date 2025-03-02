@@ -5,7 +5,7 @@ from src.performance_matrix.return_matrix.percentage_change import PercentageCha
 
 
 class ConditionalValueAtRisk(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, confidence_level: float = 0.95):
+    def __init__(self, stock_data: pd.DataFrame, confidence_level: float = 0.95):
         super().__init__(stock_data)
         self.confidence_level = confidence_level
 
