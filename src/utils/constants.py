@@ -3,6 +3,13 @@ from enum import Enum
 
 
 @dataclasses.dataclass
+class GeneralConventions:
+    frequency_yearly: str = "yearly"
+    frequency_monthly: str = "monthly"
+    frequency_multiyear: str = "multiyear"
+
+
+@dataclasses.dataclass
 class GlobalStockData:
     START_DATE: str = "Start Date"
     END_DATE: str = "End Date"
