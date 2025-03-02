@@ -57,3 +57,8 @@ class StockListsColumns:
 class Stocks:
     EQUITY: str = "EQ"
     NSE_EXTENSION: str = ".NS"
+
+
+@dataclasses.dataclass
+class GlobalConstant:
+    TOP_N_TICKERS: int = 15

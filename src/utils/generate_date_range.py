@@ -2,6 +2,27 @@ from datetime import datetime, timedelta
 
 from src.utils.constants import GeneralConventions
 
+from datetime import datetime
+
+
+def get_first_and_last_date_of_year(year: int):
+    """
+    Get the first and last date of a given year.
+
+    Args:
+        year (int): The year for which to calculate the first and last date.
+
+    Returns:
+        tuple: A tuple containing the first date and last date of the year.
+    """
+    # First date of the year
+    first_date = datetime(year, 1, 1).date()  # January 1st of the year
+
+    # Last date of the year
+    last_date = datetime(year, 12, 31).date()  # December 31st of the year
+
+    return first_date, last_date
+
 
 def generate_month_date_ranges(year, months=None):
     """Generate start_date and end_date (without time) for each month in the specified year.
