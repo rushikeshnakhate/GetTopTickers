@@ -3,17 +3,16 @@ from abc import ABC, abstractmethod
 
 
 class BaseStrategy(ABC):
-    """
-    Base class for all strategies. All strategies should inherit from this class and implement the `run` method.
-    """
-
     def __init__(self, df: pd.DataFrame, top_n: int = 5):
-        self.df = df  # DataFrame containing stock data and indicators
+        self.df = df
         self.top_n = top_n
 
     @abstractmethod
     def run(self):
-        """
-        Each subclass will implement the `run` method for their specific strategy.
-        """
         pass
+
+    def get_tickers(self, sorted_df: pd.DataFrame) -> list:
+        """
+        Returns a list of tickers in the proper order.
+        """
+        return sorted_df['Ticker'].tolist()[:self.top_n]

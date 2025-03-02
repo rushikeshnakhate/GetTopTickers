@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
@@ -13,7 +15,11 @@ class OmegaRatio(BasePerformanceMatrix):
         self.threshold = threshold
 
     def calculate(self):
-        returns = PercentageChange(self.stock_data).calculate()
-        gains = returns[returns > self.threshold] - self.threshold
-        losses = self.threshold - returns[returns < self.threshold]
-        return gains.sum() / losses.sum()
+        try:
+            returns = PercentageChange(self.stock_data).calculate()
+            gains = returns[returns > self.threshold] - self.threshold
+            losses = self.threshold - returns[returns < self.threshold]
+            return gains.sum() / losses.sum()
+        except Exception as e:
+            logging.error("OmegaRatio failed with error={}".format(e))
+            return str(e)

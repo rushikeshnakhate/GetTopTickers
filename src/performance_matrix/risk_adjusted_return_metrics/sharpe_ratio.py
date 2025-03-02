@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
@@ -12,6 +14,10 @@ class SharpeRatio(BasePerformanceMatrix):
         self.risk_free_rate = risk_free_rate
 
     def calculate(self):
-        returns = PercentageChange(self.stock_data).calculate()
-        excess_returns = returns - self.risk_free_rate
-        return excess_returns.mean() / Volatility(self.stock_data).calculate()
+        try:
+            returns = PercentageChange(self.stock_data).calculate()
+            excess_returns = returns - self.risk_free_rate
+            return excess_returns.mean() / Volatility(self.stock_data).calculate()
+        except Exception as e:
+            logging.error("SharpeRatio failed with error={}".format(e))
+            return str(e)

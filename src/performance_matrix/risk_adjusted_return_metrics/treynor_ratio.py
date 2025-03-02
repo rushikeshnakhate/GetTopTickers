@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
@@ -12,7 +14,11 @@ class TreynorRatio(BasePerformanceMatrix):
         self.risk_free_rate = risk_free_rate
 
     def calculate(self):
-        stock_returns = PercentageChange(self.stock_data).calculate()
-        beta = Beta(self.stock_data, self.market_data).calculate()
-        excess_returns = stock_returns.mean() - self.risk_free_rate
-        return excess_returns / beta
+        try:
+            stock_returns = PercentageChange(self.stock_data).calculate()
+            beta = Beta(self.stock_data, self.market_data).calculate()
+            excess_returns = stock_returns.mean() - self.risk_free_rate
+            return excess_returns / beta
+        except Exception as e:
+            logging.error("TreynorRatio failed with error={}".format(e))
+            return str(e)

@@ -93,7 +93,13 @@ def get_performance_metrics(
     stock_data = dataFetcher.get_close_price_service(ticker=ticker, start_date=start_date, end_date=end_date)
     market_data = dataFetcher.get_close_price_service(ticker=GLobalColumnName.ticker_nifty50, start_date=start_date,
                                                       end_date=end_date)
-    # Calculate performance metrics
+
+    if stock_data.empty or market_data.empty:
+        logging.error(
+            "get performance matrix failed for cache_key={},"
+            "market_data={},stock_data={} is None".format(cache_key, market_data.shape, stock_data.shape))
+        # Calculate performance metrics
+        return pd.DataFrame
     factory = PerformanceMatrixFactory(stock_data, market_data=market_data, risk_free_rate=0.02)
     results = factory.calculate(cache_key, group_name, selected_metrics)
     return to_dataframe(column_name=GLobalColumnName.Ticker, column_value=ticker, results=results)

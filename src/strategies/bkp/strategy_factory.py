@@ -1,8 +1,8 @@
 import logging
 from pathlib import Path
 
-from src.strategies.mean_reversion import MeanReversionStrategy
-from src.strategies.momentum import MomentumStrategy
+from src.strategies.bkp.mean_reversion import MeanReversionStrategy
+from src.strategies.bkp.momentum import MomentumStrategy
 from src.utils.logging_config import setup_logging
 
 # Setup logging

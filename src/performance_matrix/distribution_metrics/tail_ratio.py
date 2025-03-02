@@ -1,4 +1,6 @@
 # src/performance_matrix/tail_ratio.py
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
@@ -14,12 +16,16 @@ class TailRatio(BasePerformanceMatrix):
         Calculate the Tail Ratio.
         :return: Tail Ratio as a float.
         """
-        gains = Gain(self.stock_data).calculate()
-        losses = Loss(self.stock_data).calculate()
+        try:
+            gains = Gain(self.stock_data).calculate()
+            losses = Loss(self.stock_data).calculate()
 
-        avg_gain = gains.mean()
-        avg_loss = abs(losses.mean())
+            avg_gain = gains.mean()
+            avg_loss = abs(losses.mean())
 
-        if avg_loss == 0:
-            return float('inf')  # Avoid division by zero
-        return avg_gain / avg_loss
+            if avg_loss == 0:
+                return float('inf')  # Avoid division by zero
+            return avg_gain / avg_loss
+        except Exception as e:
+            logging.error("Tail Ratio calculation failed: {}".format(e))
+            return "Tail Ratio calculation failed: {}".format(e)

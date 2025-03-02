@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
@@ -11,8 +13,12 @@ class SortinoRatio(BasePerformanceMatrix):
         self.risk_free_rate = risk_free_rate
 
     def calculate(self):
-        returns = PercentageChange(self.stock_data).calculate()
-        downside_returns = returns[returns < 0]
-        downside_risk = downside_returns.std()
-        excess_returns = returns.mean() - self.risk_free_rate
-        return excess_returns / downside_risk
+        try:
+            returns = PercentageChange(self.stock_data).calculate()
+            downside_returns = returns[returns < 0]
+            downside_risk = downside_returns.std()
+            excess_returns = returns.mean() - self.risk_free_rate
+            return excess_returns / downside_risk
+        except Exception as e:
+            logging.error("SortinoRatio failed with error={}".format(e))
+            return str(e)

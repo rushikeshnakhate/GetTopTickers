@@ -5,15 +5,8 @@ from typing import Dict, List
 from pandas import DataFrame
 from tabulate import tabulate
 
-from src.strategies.bollinger_bands_breakout_strategy import BollingerBandsBreakoutStrategy
-from src.strategies.breakout import BreakoutStrategy
-from src.strategies.keltner_channel_breakout_strategy import KeltnerChannelBreakoutStrategy
-from src.strategies.mean_reversion import MeanReversionStrategy
-from src.strategies.momentum import MomentumStrategy
-from src.strategies.top_gainers.top_gainers import TopGainersStrategy
-from src.strategies.top_gainers.top_gainers_RSI_Strategy import TopGainersRSIStrategy
-from src.strategies.top_gainers.top_gainers_combined_strategy import TopGainersCombinedStrategy
-from src.strategies.top_loosers.top_losers import TopLosersStrategy
+from src.strategies.bkp.bollinger_bands_breakout_strategy import BollingerBandsBreakoutStrategy
+from src.strategies.bkp.keltner_channel_breakout_strategy import KeltnerChannelBreakoutStrategy
 
 
 class StrategyRunner:

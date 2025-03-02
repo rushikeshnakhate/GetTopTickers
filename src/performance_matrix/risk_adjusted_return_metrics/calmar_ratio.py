@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from src.performance_matrix.return_matrix.annualized_return import AnnualizedReturn
@@ -14,6 +16,10 @@ class CalmarRatio(BasePerformanceMatrix):
         self.periods_per_year = periods_per_year
 
     def calculate(self):
-        annualized_return = AnnualizedReturn(self.stock_data, self.periods_per_year).calculate()
-        max_drawdown = MaximumDrawdown(self.stock_data).calculate()
-        return annualized_return / abs(max_drawdown)
+        try:
+            annualized_return = AnnualizedReturn(self.stock_data, self.periods_per_year).calculate()
+            max_drawdown = MaximumDrawdown(self.stock_data).calculate()
+            return annualized_return / abs(max_drawdown)
+        except Exception as e:
+            logging.error("CalmarRatio failed with error={}".format(e))
+            return str(e)
