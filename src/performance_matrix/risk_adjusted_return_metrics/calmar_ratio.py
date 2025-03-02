@@ -1,13 +1,16 @@
 import pandas as pd
 
 from src.performance_matrix.return_matrix.annualized_return import AnnualizedReturn
-from src.performance_matrix.base_parameter import BasePerformanceMatrix
+from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
 from src.performance_matrix.risk_metrics.maximum_drawdown import MaximumDrawdown
 
 
 class CalmarRatio(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, periods_per_year: int = 252):
+    def __init__(self, stock_data: pd.Series, market_data: pd.Series = None, risk_free_rate: float = 0.0,
+                 periods_per_year: int = 252):
         super().__init__(stock_data)
+        self.risk_free_rate = risk_free_rate
+        self.market_data = market_data
         self.periods_per_year = periods_per_year
 
     def calculate(self):

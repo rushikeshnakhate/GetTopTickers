@@ -1,7 +1,7 @@
 # src/performance_matrix/sterling_ratio.py
 import pandas as pd
 
-from src.performance_matrix.base_parameter import BasePerformanceMatrix
+from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
 from src.performance_matrix.return_matrix.annualized_return import AnnualizedReturn
 from src.performance_matrix.risk_metrics.maximum_drawdown import MaximumDrawdown
 

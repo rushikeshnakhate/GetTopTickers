@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import Dict, Optional, List
 
 import pandas as pd
@@ -17,9 +18,13 @@ class YahooProvider(BaseProvider):
         """
         Download historical stock data for a given ticker using Yahoo Finance.
         """
-        ticker = yf.Ticker(ticker)
-        data = ticker.history(start=start_date, end=end_date, interval=interval)
-        return data
+        try:
+            ticker = yf.Ticker(ticker)
+            data = ticker.history(start=start_date, end=end_date, interval=interval)
+            return data
+        except Exception as e:
+            logging.info(f" YahooProvider:Error fetching data for {ticker}: {e}")
+            return None
 
     async def download_historical_data_async(self,
                                              ticker: str,
@@ -31,11 +36,15 @@ class YahooProvider(BaseProvider):
         Asynchronously download historical stock data for a given ticker using Yahoo Finance.
         """
         # Use yfinance's synchronous method in a thread pool
-        loop = asyncio.get_event_loop()
-        data = await loop.run_in_executor(
-            None, self.download_historical_data, ticker, start_date, end_date, interval
-        )
-        return data
+        try:
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(
+                None, self.download_historical_data, ticker, start_date, end_date, interval
+            )
+            return data
+        except Exception as e:
+            logging.info(f"Error fetching data for {ticker}: {e}")
+            return None
 
     def download_close_prices(self,
                               ticker: str,

@@ -2,6 +2,13 @@ import dataclasses
 from enum import Enum
 
 
+@dataclasses.dataclass
+class GLobalColumnName:
+    Ticker: str = "Ticker"
+    ticker_nifty50 = "^NSEI"  # Nifty 50 Index
+    ticker_nifty100 = "^NSE100"  # Nifty 100 Index
+
+
 class Providers(Enum):
     YAHOO = "yahoo"
     YAHOO_FOR_BALANCE_SHEET = "yahoo_for_balance_sheet"

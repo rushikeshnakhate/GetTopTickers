@@ -1,11 +1,11 @@
 import pandas as pd
 
-from src.performance_matrix.base_parameter import BasePerformanceMatrix
+from src.performance_matrix.base_performance_matrix import BasePerformanceMatrix
 from src.performance_matrix.return_matrix.percentage_change import PercentageChange
 
 
 class DownsideCaptureRatio(BasePerformanceMatrix):
-    def __init__(self, stock_data: pd.Series, market_data: pd.Series):
+    def __init__(self, stock_data: pd.Series, market_data: pd.Series, risk_free_rate: float = 0.0):
         super().__init__(stock_data)
         self.market_data = market_data
 

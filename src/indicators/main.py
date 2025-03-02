@@ -25,7 +25,8 @@ from src.indicators.historical_price_indicators.moving_average_convergence_diver
     MovingAverageConvergenceDivergence
 from src.indicators.historical_price_indicators.on_balance_volume import OnBalanceVolume
 from src.service.main import dataFetcher
-from src.utils.constants import CacheType
+from src.utils.constants import CacheType, GLobalColumnName
+from src.utils.utils import to_dataframe
 
 
 class IndicatorFactory:
@@ -114,15 +115,7 @@ class IndicatorFactory:
         historical_price_results = self.calculate_historical_price_indicators(ticker, selected_indicators)
 
         all_results = {**close_price_results, **historical_price_results}
-        # Step 1: Create a DataFrame with the Ticker column
-        df = pd.DataFrame({'Ticker': [ticker]})
-        df.set_index('Ticker', inplace=True)
-        # Step 2: Add the dictionary data to the DataFrame
-        # Convert the dictionary to a DataFrame and concatenate it with the existing DataFrame
-        df = pd.concat([df, pd.DataFrame([all_results])], axis=1)
-        # Store result in cache
-        self.cache.set(cache_key, df)
-        return df
+        return to_dataframe(column_name=GLobalColumnName.Ticker, column_value=ticker, results=all_results)
 
 
 def get_indicator(ticker: str, start_date: str, end_date: str):
