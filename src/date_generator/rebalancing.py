@@ -2,8 +2,6 @@ from calendar import monthrange
 from datetime import datetime
 from typing import List, Tuple, Union
 
-from src.date_generator.rebalancing_period import RebalancingPeriod
-
 
 class Rebalancing:
     @staticmethod
@@ -29,7 +27,7 @@ class Rebalancing:
         return [(datetime(year, 1, 1).date(), datetime(year, 12, 31).date())]
 
     @staticmethod
-    def generate_custom(year: int, month: int, period_days: int) -> List[Tuple[datetime.date, datetime.date]]:
+    def generate_custom_days(year: int, month: int, period_days: int) -> List[Tuple[datetime.date, datetime.date]]:
         days_in_month = monthrange(year, month)[1]
         date_ranges = []
         start_day = 1
@@ -40,16 +38,32 @@ class Rebalancing:
         return date_ranges
 
     @staticmethod
-    def generate_rebalancing_dates(year: int, month: int, rebalancing: Union[RebalancingPeriod, int]) -> List[
+    def generate_custom_months(year: int, start_month: int, period_months: int) -> List[
         Tuple[datetime.date, datetime.date]]:
-        if rebalancing == RebalancingPeriod.DAILY:
-            return Rebalancing.generate_daily(year, month)
-        elif rebalancing == RebalancingPeriod.HALF_MONTHLY:
-            return Rebalancing.generate_half_monthly(year, month)
-        elif rebalancing == RebalancingPeriod.MONTHLY:
-            return Rebalancing.generate_monthly(year, month)
-        elif rebalancing == RebalancingPeriod.YEARLY:
-            return Rebalancing.generate_yearly(year)
-        elif isinstance(rebalancing, int) and 1 < rebalancing < 12:
-            return Rebalancing.generate_custom(year, month, rebalancing)
-        return []
+        date_ranges = []
+
+        # Start from the given start_month and iterate in steps of period_months
+        month = start_month
+        while month <= 12:
+            # Calculate the start and end month based on period_months
+            end_month = min(month + period_months - 1, 12)  # Ensure we don't go past December
+
+            # Get the last day of the end month
+            start_date = datetime(year, month, 1).date()
+            end_date = datetime(year, end_month, monthrange(year, end_month)[1]).date()
+
+            date_ranges.append((start_date, end_date))
+
+            # Move to the next period_months interval
+            month = end_month + 1
+
+        return date_ranges
+
+    @staticmethod
+    def generate_rebalancing_dates(year: int, month: int, rebalancing_days: Union[int, None],
+                                   rebalancing_months: Union[int, None]) -> List[Tuple[datetime.date, datetime.date]]:
+        if rebalancing_days:
+            return Rebalancing.generate_custom_days(year, month, rebalancing_days)
+        elif rebalancing_months:
+            return Rebalancing.generate_custom_months(year, month, rebalancing_months)
+        return Rebalancing.generate_monthly(year, month)

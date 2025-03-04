@@ -14,7 +14,7 @@ if __name__ == "__main__":
         "INDUSINDBK.NS", "IOC.NS", "HAVELLS.NS", "DABUR.NS", "PIDILITIND.NS",
         "LTIM.NS", "UPL.NS", "AUROPHARMA.NS", "SIEMENS.NS", "GAIL.NS",
         "VEDL.NS", "HINDALCO.NS", "ACC.NS", "AMBUJACEM.NS", "BANKBARODA.NS",
-        "IDFCFIRSTB.NS", "BOSCHLTD.NS", "NMDC.NS", "LUPIN.NS", "CONCOR.NS",
+        "IDFCFIRSTB.NS", "BOSCHLTD.NS", "NMDC.NS", "LUPIN.NS", "CONCOR.NS", \
         "ABB.NS", "INDIGO.NS", "PNB.NS", "TVSMOTOR.NS", "BIOCON.NS",
         "TATAPOWER.NS", "MUTHOOTFIN.NS", "TRENT.NS", "MANAPPURAM.NS", "JINDALSTEL.NS",
         "MINDTREE.NS", "GLENMARK.NS", "TORNTPHARM.NS", "SRF.NS", "CANBK.NS",
@@ -25,4 +25,8 @@ if __name__ == "__main__":
         "TORNTPOWER.NS", "CUB.NS", "GODREJCP.NS", "MCX.NS", "PERSISTENT.NS"
     ]
 
-    run_pyport_ticker_selector(years=[2024], top_n_tickers=5, rebalancing_period="monthly", tickers=tickers)
+    run_pyport_ticker_selector(years=[2024],
+                               top_n_tickers=5,
+                               rebalancing_days=10,
+                               rebalancing_months=2,
+                               tickers=tickers)

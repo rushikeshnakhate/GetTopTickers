@@ -1,63 +1,94 @@
-# Date Range Generator for Rebalancing Periods
+# Date Range Generator Library for Rebalancing Periods
 
-This project provides a Python tool designed to generate date ranges for different rebalancing periods. The rebalancing periods can be daily, half-monthly, monthly, yearly, or custom, allowing users to choose the period that best fits their needs.
+This Python project provides a tool for generating date ranges based on various rebalancing periods. The rebalancing periods can be daily, half-monthly, monthly, yearly, or custom, allowing flexibility for various financial, trading, or portfolio management scenarios.
 
 ## Purpose
 
-The main purpose of this tool is to help generate date ranges based on different rebalancing periods. A "rebalancing period" refers to the frequency at which a portfolio or data is adjusted or updated. For example, a daily rebalancing period means updating the portfolio every day, while a yearly rebalancing period means updating once a year.
+The tool helps generate date ranges based on different rebalancing periods, where "rebalancing" refers to the frequency at which portfolio allocations, data, or financial instruments are adjusted or updated. For example:
+- **Daily rebalancing**: Updates the portfolio every day.
+- **Half-monthly rebalancing**: Divides a month into two periods (1-15 and 16-end of the month).
+- **Monthly rebalancing**: Adjusts the portfolio once a month.
+- **Yearly rebalancing**: Updates the portfolio once per year.
+- **Custom rebalancing**: Allows you to define custom periods (e.g., every 5 days).
 
 ## Features
 
-This tool offers several rebalancing period options:
+- **Daily Rebalancing**: Generates date ranges for every single day in a month.
+- **Half-Monthly Rebalancing**: Generates two periods for the month (1st-15th, 16-end of the month).
+- **Monthly Rebalancing**: Generates a single range for the whole month.
+- **Yearly Rebalancing**: Generates a range for the entire year.
+- **Custom Rebalancing**: Allows the user to define custom rebalancing periods, such as every 5, 10, or 15 days.
 
-- **Daily Rebalancing**: Generates a date range for every single day in a month.
-- **Half-Monthly Rebalancing**: Divides a month into two periods — the first half of the month and the second half.
-- **Monthly Rebalancing**: Provides a date range for the entire month.
-- **Yearly Rebalancing**: Generates a date range for the whole year.
-- **Custom Rebalancing**: Allows you to set a custom rebalancing period, such as every 5 days, 10 days, etc., within a month.
 
-## How It Works
 
-The tool consists of two main components:
+### Example 1: Daily Rebalancing for March 2025
+To generate daily rebalancing periods for March 2025, use the following code:
+```
+from datetime import datetime
+from your_module import DateRangeGenerator, RebalancingPeriod
 
-### 1. **RebalancingPeriod Enum**
+generator = DateRangeGenerator(years=2025, months=3, rebalancing=RebalancingPeriod.DAILY)
+date_ranges = generator.get_date_range()
 
-This is a set of predefined options to define how often rebalancing should happen:
+for start_date, end_date in date_ranges:
+    print(f"Start: {start_date}, End: {end_date}")
+Output Example:
+Start: 2025-03-01, End: 2025-03-01
+Start: 2025-03-02, End: 2025-03-02
+Start: 2025-03-03, End: 2025-03-03
+Start: 2025-03-04, End: 2025-03-04
+Start: 2025-03-05, End: 2025-03-05
+```
 
-- **DAILY**: Rebalancing occurs every day.
-- **HALF_MONTHLY**: Rebalancing occurs twice a month, splitting the month into two halves.
-- **MONTHLY**: Rebalancing occurs once per month.
-- **YEARLY**: Rebalancing occurs once per year.
 
-### 2. **Rebalancing Class**
 
-This class contains methods that generate the specific date ranges based on the chosen rebalancing period.
 
-- **Daily Rebalancing**: The method generates a date range for every day in a month.
-- **Half-Monthly Rebalancing**: The method splits a month into two periods — one from the 1st to the 15th, and the other from the 16th to the last day of the month.
-- **Monthly Rebalancing**: This method generates one range for the entire month.
-- **Yearly Rebalancing**: This generates a range for the entire year (from January 1st to December 31st).
-- **Custom Rebalancing**: This method generates date ranges based on a custom period in days, allowing for more flexibility.
 
-### 3. **DateRangeGenerator Class**
+### Example 2: Half-Monthly Rebalancing for February 2025
+To generate half-monthly rebalancing periods for February 2025, where the month is split into two periods (1st-15th, 16-end):
+```
+generator = DateRangeGenerator(years=2025, months=2, rebalancing=RebalancingPeriod.HALF_MONTHLY)
+date_ranges = generator.get_date_range()
 
-This class makes it easy to generate date ranges over multiple years and months. It allows users to specify the rebalancing period and the specific years and months for which they want the date ranges.
+for start_date, end_date in date_ranges:
+    print(f"Start: {start_date}, End: {end_date}")
+Output Example:
+Start: 2025-02-01, End: 2025-02-15
+Start: 2025-02-16, End: 2025-02-28
+```
 
-### 4. **How to Use**
 
-The tool works by creating an instance of the `DateRangeGenerator` class. You can specify the following:
 
-- **Years**: The year(s) for which you want to generate date ranges.
-- **Months**: The month(s) for which you want to generate date ranges.
-- **Rebalancing Period**: The rebalancing period, which can be daily, half-monthly, monthly, yearly, or custom.
 
-Once you create an instance of `DateRangeGenerator`, you can call the `get_date_range()` method to get a list of date ranges.
+### Example 3: Monthly Rebalancing for May 2025
+To generate monthly rebalancing periods for May 2025:
+```
+generator = DateRangeGenerator(years=2025, months=5, rebalancing=RebalancingPeriod.MONTHLY)
+date_ranges = generator.get_date_range()
 
-### Example Usage
+for start_date, end_date in date_ranges:
+    print(f"Start: {start_date}, End: {end_date}")
+Output Example:
+Start: 2025-05-01, End: 2025-05-31
 
-- **Daily Rebalancing**: 
-  If you want daily rebalancing for the month of March 2025, you can create an instance of the `DateRangeGenerator` class like this:
-  ```python
-  generator = DateRangeGenerator(years=2025, months=3, rebalancing=RebalancingPeriod.DAILY)
-  date_ranges = generator.get_date_range()
-  print(date_ranges)
+```
+
+
+
+### Example 4: Custom Rebalancing Period (Every 5 Days) for April 2025
+To generate custom rebalancing periods every 5 days for April 2025:
+```
+generator = DateRangeGenerator(years=2025, months=4, rebalancing=5)
+date_ranges = generator.get_date_range()
+
+for start_date, end_date in date_ranges:
+    print(f"Start: {start_date}, End: {end_date}")
+Output Example:
+
+Start: 2025-04-01, End: 2025-04-05
+Start: 2025-04-06, End: 2025-04-10
+Start: 2025-04-11, End: 2025-04-15
+Start: 2025-04-16, End: 2025-04-20
+Start: 2025-04-21, End: 2025-04-25
+Start: 2025-04-26, End: 2025-04-30
+```

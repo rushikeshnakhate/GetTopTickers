@@ -3,12 +3,12 @@ import logging
 import pandas as pd
 from tabulate import tabulate
 
+from src.date_generator.date_range_generator import DateRangeGenerator
 from src.indicators.main import get_indicator_bulk
 from src.performance_matrix.main import get_performance_metrics_bulk
 from src.service.main import get_stocks, dataFetcher
 from src.strategies.main import StrategyFactory
 from src.utils.constants import GLobalColumnName, GlobalConstant
-from src.utils.generate_date_range import generate_date_ranges
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -17,19 +17,21 @@ logger = logging.getLogger(__name__)
 
 def run_pyport_ticker_selector(
         years: list,  # List of years to process (mandatory)
+        months: list = None,
         top_n_tickers: int = GlobalConstant.TOP_N_TICKERS,
         tickers: list = None,  # List of tickers(optional)
-        rebalancing_period="monthly",
+        rebalancing_days=None,
+        rebalancing_months=3,
         indicators: list = None,
         performance_matrix: list = None,
         strategies: list = None
 ):
     # Generate date ranges (assuming generate_month_date_ranges is defined)
-    date_ranges = generate_date_ranges(years=years)
 
-    # Initialize an empty list to store results
+    date_ranges = DateRangeGenerator(years=years, months=months, rebalancing_days=rebalancing_days,
+                                     rebalancing_months=rebalancing_months).get_date_range()
+
     results = []
-
     # Loop through date ranges and process the data
     for start_date, end_date in date_ranges:
         logging.info("start_date={}, end_date={}".format(start_date, end_date))
