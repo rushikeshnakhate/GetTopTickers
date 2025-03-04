@@ -9,15 +9,8 @@ PyPort Ticker Selector is a Python-based stock selection library designed to gen
 - Provides flexibility to choose specific indicators, performance matrices, and rebalancing periods.
 - Outputs results in CSV format for further analysis or portfolio optimization.
 
-## Installation
-Clone the repository and install dependencies:
-```bash
- git clone https://github.com/yourusername/pyport-ticker-selector.git
- cd pyport-ticker-selector
- pip install -r requirements.txt
-```
 
-## Usage
+###  Usage
 ### Example: Running the Ticker Selection Process
 ```python
 from pyport_ticker_selector import run_pyport_ticker_selector
@@ -29,15 +22,98 @@ run_pyport_ticker_selector(
 )
 ```
 
+
+Example 1: Running the Ticker Selection Process for a Single Year (2024)
+```
+from pyport_ticker_selector import run_pyport_ticker_selector
+
+# Run for the year 2024 with default settings (monthly rebalancing)
+run_pyport_ticker_selector(
+    years=[2024],
+    rebalancing_period="monthly"
+)
+```
+Example 2: Running for Multiple Years with Quarterly Rebalancing
+
+```from pyport_ticker_selector import run_pyport_ticker_selector
+
+# Run for 2024 and 2025 with quarterly rebalancing
+run_pyport_ticker_selector(
+    years=[2024, 2025],
+    rebalancing_period="quarterly"
+)
+```
+Example 3: Using Specific Tickers and Custom Indicators
+
+```
+from pyport_ticker_selector import run_pyport_ticker_selector
+
+# Specify a list of tickers and custom performance metrics for selection
+run_pyport_ticker_selector(
+    years=[2024],
+    tickers=["AAPL", "GOOG", "AMZN"],
+    rebalancing_period="monthly",
+    indicators=["RSI", "MACD"],
+    performance_matrix=["Sharpe Ratio", "Max Drawdown"]
+)
+```
+
 ### Parameters:
-- **years** *(list of int)*: List of years to process (e.g., `[2024]`).
-- **tickers** *(list of str, optional)*: List of specific tickers to analyze. If None, all available tickers are used.
-- **rebalancing_period** *(str, optional)*: Defines the rebalancing period (e.g., "monthly", "quarterly", "yearly"). Default is "monthly".
-- **indicators** *(list, optional)*: List of specific indicators to use for selection.
-- **performance_matrix** *(list, optional)*: List of performance metrics for evaluation.
-- **strategies** *(list, optional)*: Selection strategies to be applied. Default includes predefined strategies.
+
+### **years** *(list of int)*:
+- **Description**: List of years to process for the ticker selection. For example, `[2024, 2025]`.
+- **Required**: Yes
+- **Example**: `[2024]`
+
+### **tickers** *(list of str, optional)*:
+- **Description**: List of specific stock tickers to analyze. If `None`, all available tickers (such as Nifty50) will be used.
+- **Required**: No
+- **Default**: `None` (analyzed for all available tickers)
+- **Example**: `["AAPL", "GOOG", "AMZN"]`
+
+### **rebalancing_period** *(str, optional)*:
+- **Description**: Defines the rebalancing period. This is the frequency at which the ticker list is recalculated.
+- **Values**: `"monthly"`, `"quarterly"`, `"yearly"`
+- **Required**: No
+- **Default**: `"monthly"`
+- **Example**: `"quarterly"`
+
+### **indicators** *(list of str, optional)*:
+- **Description**: List of technical indicators to be used for stock selection. You can use predefined indicators such as RSI, MACD, etc.
+- **Required**: No
+- **Default**: Depends on the selected strategy (usually includes RSI, MACD, etc.).
+- **Example**: `["RSI", "MACD"]`
+
+### **performance_matrix** *(list of str, optional)*:
+- **Description**: List of performance metrics used to evaluate the tickers. Metrics include Sharpe ratio, Sortino ratio, and others.
+- **Required**: No
+- **Default**: Uses predefined metrics like Sharpe Ratio, Sortino Ratio.
+- **Example**: `["Sharpe Ratio", "Max Drawdown"]`
+
+### **strategies** *(list of str, optional)*:
+- **Description**: List of selection strategies to apply. You can use predefined strategies or define custom strategies.
+- **Required**: No
+- **Default**: Uses predefined strategies (such as RSI Momentum, Sharpe Ratio, etc.)
+- **Example**: `["RSI Momentum", "Sharpe Ratio"]`
 
 ## Strategies
+
+### Predefined Strategies
+
+#### **Indicator-Based Strategies**:
+- **RSI Momentum Strategy**: Uses the Relative Strength Index (RSI) to determine momentum.
+- **MACD Crossover Strategy**: Uses the Moving Average Convergence Divergence (MACD) to identify potential buy or sell signals.
+- **Bollinger Bands Mean Reversion Strategy**: Uses Bollinger Bands for mean-reversion trading signals.
+- More to come...
+
+#### **Performance Metrics-Based Strategies**:
+- **Sharpe Ratio**: Maximizes risk-adjusted return.
+- **Sortino Ratio**: Focuses on downside risk to reward ratio.
+- **Maximum Drawdown**: Minimizes large losses from peak to trough.
+- **Win Rate Strategy**: Selects tickers with a higher win rate of price movements.
+- More to come...
+
+
 ### Predefined Strategies
 1. **Indicator-Based Strategies:**
    - RSI Momentum Strategy
@@ -62,6 +138,6 @@ Users can define their own strategies by extending the `BaseStrategy` class and 
   - **strategy_name**
   - **selected tickers**
 
-## Integration with PyPort Optimization Pipeline
+### Integration with PyPort Optimization Pipeline
 This library serves as an input generator for **PyPort Optimization Pipeline**, where the selected tickers are used for portfolio construction and optimization.
 
