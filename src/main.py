@@ -21,7 +21,7 @@ def run_pyport_ticker_selector(
         top_n_tickers: int = GlobalConstant.TOP_N_TICKERS,
         tickers: list = None,  # List of tickers(optional)
         rebalancing_days=None,
-        rebalancing_months=3,
+        rebalancing_months=None,
         indicators: list = None,
         performance_matrix: list = None,
         strategies: list = None
@@ -80,7 +80,7 @@ def run_pyport_ticker_selector(
             # Log the results for the current date range
             logging.info(tabulate(strategy_results, headers='keys', tablefmt='psql'))
         except Exception as e:
-            logging.error("Error=e , start_date={}, end_date={}".format(e, start_date, end_date))
+            logging.error("Error={}, start_date={}, end_date={}".format(e, start_date, end_date))
     # Convert the results list to a DataFrame
     results_df = pd.DataFrame(results)
 

@@ -8,6 +8,7 @@ from src.utils.constants import StockListsColumns, Stocks
 def get_stocks(tickers: List = None):
     ticker_list = tickers
     if tickers is None:
+
         df = dataFetcher.get_stock_list_service_data()
         eq_tickers = df[df[StockListsColumns.SERIES] == Stocks.EQUITY][StockListsColumns.SYMBOL]
         # Append 'NS' to each ticker and convert to list
