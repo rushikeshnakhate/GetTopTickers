@@ -71,12 +71,19 @@ run_pyport_ticker_selector(
 - **Default**: `None` (analyzed for all available tickers)
 - **Example**: `["AAPL", "GOOG", "AMZN"]`
 
-### **rebalancing_period** *(str, optional)*:
-- **Description**: Defines the rebalancing period. This is the frequency at which the ticker list is recalculated.
-- **Values**: `"monthly"`, `"quarterly"`, `"yearly"`
+### **rebalancing_days** *(int, optional)*:
+- **Description**: Defines the rebalancing day. This is the frequency at which the ticker list is recalculated.
+- **Values**: `1`, `2`
 - **Required**: No
-- **Default**: `"monthly"`
-- **Example**: `"quarterly"`
+- **Default**: `None`
+- **Example**: `1`
+
+### **rebalancing_months** *(int, optional)*:
+- **Description**: Defines the rebalancing months. This is the frequency at which the ticker list is recalculated.
+- **Values**: `1`, `2`
+- **Required**: No
+- **Default**: `1`
+- **Example**: `1`
 
 ### **indicators** *(list of str, optional)*:
 - **Description**: List of technical indicators to be used for stock selection. You can use predefined indicators such as RSI, MACD, etc.
@@ -112,21 +119,6 @@ run_pyport_ticker_selector(
 - **Maximum Drawdown**: Minimizes large losses from peak to trough.
 - **Win Rate Strategy**: Selects tickers with a higher win rate of price movements.
 - More to come...
-
-
-### Predefined Strategies
-1. **Indicator-Based Strategies:**
-   - RSI Momentum Strategy
-   - MACD Crossover Strategy
-   - Bollinger Bands Mean Reversion Strategy
-   - And more...
-
-2. **Performance Metrics-Based Strategies:**
-   - Sharpe Ratio
-   - Sortino Ratio
-   - Maximum Drawdown
-   - Win Rate Strategy
-   - And more...
 
 ### Custom Strategies
 Users can define their own strategies by extending the `BaseStrategy` class and implementing custom ranking logic.
