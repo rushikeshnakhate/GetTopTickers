@@ -1,6 +1,12 @@
 import logging
 from typing import List, Dict
 
+from tabulate import tabulate
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 import pandas as pd
 
 from src.strategies.indicator_based.mean_reversion_indicators.bollinger_bands_mean_reversion_strategy import \
@@ -151,3 +157,24 @@ class StrategyFactory:
             except Exception as ex:
                 logging.error(str(ex))
         return results
+
+
+def run_strategies(indicators_df, performance_df, start_date, end_date, top_n_tickers):
+    """Run all strategies and return the results."""
+    logger.info(f"Running strategies for start_date={start_date}, end_date={end_date}")
+
+    strategy_results = StrategyFactory(
+        indicators_df=indicators_df, performance_df=performance_df, top_n=top_n_tickers
+    ).run_all_strategies()
+
+    results = []
+    for strategy_name, tickers in strategy_results.items():
+        results.append({
+            'start_date': start_date,
+            'end_date': end_date,
+            'strategy_name': strategy_name,
+            'tickers': tickers
+        })
+
+    logger.info(tabulate(strategy_results, headers='keys', tablefmt='psql'))
+    return results
