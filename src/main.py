@@ -35,7 +35,7 @@ def calculate_indicators_and_performance(close_price, ticker_list, market_data, 
     return indicators_df, performance_df
 
 
-def get_top_tickers(years,
+def run_pyport_ticker_selector(years,
                                months=None,
                                top_n_tickers=GlobalConstant.TOP_N_TICKERS,
                                tickers=None,
