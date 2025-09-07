@@ -1,4 +1,4 @@
-# GetTopTickers
+# PyPortTickerSelector
 
 GetTopTickers is a Python-based stock selection method designed to generate the top N tickers for a given period based on various predefined and user-defined strategies. This library is extension  of the **PyPort Optimization Pipeline**, where selected tickers are optimized to construct an optimal portfolio.
 
