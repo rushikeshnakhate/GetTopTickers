@@ -16,9 +16,9 @@ GetTopTickers is a Python-based stock selection method designed to generate the 
 from pyport_ticker_selector import run_pyport_ticker_selector
 
 # Run for 2024 with default settings
-get_top_tickers(
-    years=[2024],
-    rebalancing_period="monthly"
+run_pyport_ticker_selector(
+  years=[2024],
+  rebalancing_period="monthly"
 )
 ```
 
@@ -28,7 +28,7 @@ Example 1: Running the Ticker Selection Process for a Single Year (2024)
 from pyport_ticker_selector import run_pyport_ticker_selector
 
 # Run for the year 2024 with default settings (monthly rebalancing)
-get_top_tickers(
+run_pyport_ticker_selector(
     years=[2024],
     rebalancing_period="monthly"
 )
@@ -38,7 +38,7 @@ Example 2: Running for Multiple Years with Quarterly Rebalancing
 ```from pyport_ticker_selector import run_pyport_ticker_selector
 
 # Run for 2024 and 2025 with quarterly rebalancing
-get_top_tickers(
+run_pyport_ticker_selector(
     years=[2024, 2025],
     rebalancing_period="quarterly"
 )
@@ -49,7 +49,7 @@ Example 3: Using Specific Tickers and Custom Indicators
 from pyport_ticker_selector import run_pyport_ticker_selector
 
 # Specify a list of tickers and custom performance metrics for selection
-get_top_tickers(
+run_pyport_ticker_selector(
     years=[2024],
     tickers=["AAPL", "GOOG", "AMZN"],
     rebalancing_period="monthly",
